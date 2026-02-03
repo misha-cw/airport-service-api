@@ -23,7 +23,7 @@ class Route(models.Model):
 
     class Meta:
         indexes = [
-            UniqueConstraint(fields=["source", "destination"]),
+            models.Index(fields=["source", "destination"]),
         ]
 
     def __str__(self):
