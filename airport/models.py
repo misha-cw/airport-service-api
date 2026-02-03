@@ -26,8 +26,12 @@ class Route(models.Model):
             models.Index(fields=["source", "destination"]),
         ]
 
-    def __str__(self):
+    @property
+    def route_name(self):
         return f"{self.source} - {self.destination}"
+
+    def __str__(self):
+        return self.route_name
 
 
 class Crew(models.Model):
