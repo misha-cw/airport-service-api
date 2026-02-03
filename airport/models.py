@@ -53,6 +53,10 @@ class Airplane(models.Model):
         AirplaneType, related_name="airplanes", on_delete=models.CASCADE
     )
 
+    @property
+    def total_seats(self):
+        return self.rows * self.seats_in_row
+
     def __str__(self):
         return self.name
 
