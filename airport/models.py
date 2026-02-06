@@ -78,6 +78,12 @@ class Flight(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["route", "departure_time"]),
+        ]
+        ordering = ["-departure_time"]
+
     def __str__(self):
         return f"Flight from {self.route.source} to {self.route.destination} on {self.departure_time}"
 
