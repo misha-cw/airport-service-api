@@ -1,6 +1,16 @@
 from rest_framework import serializers
+from django.db import transaction
 
-from airport.models import Airplane, AirplaneType, Airport, Crew, Flight, Route
+from airport.models import (
+    Airplane,
+    AirplaneType,
+    Airport,
+    Crew,
+    Flight,
+    Order,
+    Route,
+    Ticket,
+)
 
 
 class AirportSerializer(serializers.ModelSerializer):
@@ -88,3 +98,39 @@ class FlightDetailSerializer(FlightSerializer):
     crew = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="full_name"
     )
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ["id", "flight", "row", "seat"]
+
+
+class TicketListSerializer(TicketSerializer):
+    flight = FlightListSerializer(many=False, read_only=True)
+
+
+class TicketSeatsSerializer(TicketSerializer):
+    class Meta:
+        model = Ticket
+        fields = ["row", "seat"]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
+
+    class Meta:
+        model = Order
+        fields = ["id", "tickets", "created_at"]
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            ticket_data = validated_data.pop("tickets")
+            order = Order.objects.create(**validated_data)
+            for ticket in ticket_data:
+                Ticket.objects.create(order=order, **ticket)
+            return order
+
+
+class OrderListSerializer(OrderSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)
