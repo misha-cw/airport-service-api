@@ -31,7 +31,7 @@ class Route(models.Model):
         return f"{self.source} - {self.destination}"
 
     def __str__(self):
-        return self.route_name
+        return f"Route #{self.id}"
 
 
 class Crew(models.Model):
