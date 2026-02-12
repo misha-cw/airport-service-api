@@ -114,7 +114,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         qs = self.queryset.filter(user=self.request.user)
         if self.action in ["list", "retrieve"]:
             return qs.prefetch_related(
-                "tickets__flight__route__source", "tickets__flight__route__destination"
+                "tickets__flight__route__source",
+                "tickets__flight__route__destination",
+                "tickets__flight__airplane",
             )
         return qs
 
