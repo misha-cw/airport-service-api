@@ -31,9 +31,19 @@ class RouteViewSet(viewsets.ModelViewSet):
     serializer_class = RouteSerializer
 
     def get_queryset(self):
+        source = self.request.query_params.get("source")
+        destination = self.request.query_params.get("destination")
+
         qs = self.queryset
+
         if self.action in ["list", "retrieve"]:
-            return qs.select_related("source", "destination")
+            qs = qs.select_related("source", "destination")
+
+        if source:
+            qs = qs.filter(source__name__icontains=source)
+
+        if destination:
+            qs = qs.filter(destination__name__icontains=destination)
 
         return qs
 
