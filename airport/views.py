@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from airport.models import Airplane, AirplaneType, Airport, Crew, Flight, Order, Route
 from airport.serializers import (
@@ -84,10 +85,10 @@ class FlightViewSet(viewsets.ModelViewSet):
             qs = qs.select_related(
                 "route__source",
                 "route__destination",
-                "airplane__airplane_type",
+                "airplane",
             )
         if self.action == "retrieve":
-            qs = qs.prefetch_related("crew")
+            qs = qs.select_related("airplane__airplane_type").prefetch_related("crew")
 
         return qs
 
@@ -103,6 +104,7 @@ class FlightViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
