@@ -81,7 +81,11 @@ class FlightViewSet(viewsets.ModelViewSet):
     serializer_class = FlightSerializer
 
     def get_queryset(self):
+        route_id_str = self.request.query_params.get("route")
+        departure_time = self.request.query_params.get("departure_time")
+
         qs = self.queryset
+
         if self.action in ["list", "retrieve"]:
             qs = qs.select_related(
                 "route__source",
@@ -90,6 +94,12 @@ class FlightViewSet(viewsets.ModelViewSet):
             )
         if self.action == "retrieve":
             qs = qs.select_related("airplane__airplane_type").prefetch_related("crew")
+
+        if route_id_str:
+            qs = qs.filter(route_id=int(route_id_str))
+
+        if departure_time:
+            qs = qs.filter(departure_time__date=departure_time)
 
         return qs
 
