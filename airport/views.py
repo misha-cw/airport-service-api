@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework.viewsets import GenericViewSet
+from rest_framework import mixins
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
@@ -28,12 +29,21 @@ from airport.serializers import (
 )
 
 
-class AirportViewSet(viewsets.ModelViewSet):
+class AirportViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
 
 
-class RouteViewSet(viewsets.ModelViewSet):
+class RouteViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
 
@@ -82,17 +92,30 @@ class RouteViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
 
-class CrewViewSet(viewsets.ModelViewSet):
+class CrewViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
 
 
-class AirplaneTypeViewSet(viewsets.ModelViewSet):
+class AirplaneTypeViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = AirplaneType.objects.all()
     serializer_class = AirplaneTypeSerializer
 
 
-class AirplaneViewSet(viewsets.ModelViewSet):
+class AirplaneViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Airplane.objects.all()
     serializer_class = AirplaneSerializer
 
@@ -128,7 +151,12 @@ class AirplaneViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class FlightViewSet(viewsets.ModelViewSet):
+class FlightViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Flight.objects.all()
     serializer_class = FlightSerializer
 
@@ -186,7 +214,12 @@ class OrderPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     pagination_class = OrderPagination
