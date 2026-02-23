@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from django.db.models import F, Count
 
 from airport.models import Airplane, AirplaneType, Airport, Crew, Flight, Order, Route
 from airport.serializers import (
@@ -155,7 +156,10 @@ class FlightViewSet(
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
-    queryset = Flight.objects.all()
+    queryset = Flight.objects.annotate(
+        tickets_available=F("airplane__rows") * F("airplane__seats_in_row")
+        - Count("tickets")
+    )
     serializer_class = FlightSerializer
 
     def get_queryset(self):
