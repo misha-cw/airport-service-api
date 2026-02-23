@@ -1,10 +1,14 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 from airport.models import Airplane, AirplaneType, Airport, Crew, Flight, Order, Route
 from airport.serializers import (
     AirplaneDetailSerializer,
+    AirplaneImageSerializer,
     AirplaneListSerializer,
     AirplaneSerializer,
     AirplaneTypeSerializer,
@@ -82,8 +86,24 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             return AirplaneListSerializer
         if self.action == "retrieve":
             return AirplaneDetailSerializer
+        if self.action == "upload_image":
+            return AirplaneImageSerializer
 
         return AirplaneSerializer
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        url_path="upload_image",
+        permission_classes=[IsAdminUser],
+    )
+    def upload_image(self, request, pk=None):
+        airplane = self.get_object()
+        serializer = self.get_serializer(airplane, data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class FlightViewSet(viewsets.ModelViewSet):

@@ -1,3 +1,7 @@
+import os
+import uuid
+from django.utils.text import slugify
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -52,6 +56,13 @@ class AirplaneType(models.Model):
         return self.name
 
 
+def airplane_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.name)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("uploads/images/", filename)
+
+
 class Airplane(models.Model):
     name = models.CharField(max_length=255)
     rows = models.IntegerField()
@@ -59,6 +70,7 @@ class Airplane(models.Model):
     airplane_type = models.ForeignKey(
         AirplaneType, related_name="airplanes", on_delete=models.CASCADE
     )
+    image = models.ImageField(upload_to=airplane_image_file_path, null=True, blank=True)
 
     @property
     def total_seats(self):
