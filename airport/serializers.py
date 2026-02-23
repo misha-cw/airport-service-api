@@ -26,8 +26,10 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class RouteListSerializer(RouteSerializer):
-    source = serializers.SlugRelatedField(read_only=True, slug_field="name")
-    destination = serializers.SlugRelatedField(read_only=True, slug_field="name")
+    source = serializers.SlugRelatedField(read_only=True, slug_field="closest_big_city")
+    destination = serializers.SlugRelatedField(
+        read_only=True, slug_field="closest_big_city"
+    )
 
     class Meta:
         model = Route

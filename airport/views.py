@@ -38,19 +38,21 @@ class RouteViewSet(viewsets.ModelViewSet):
     serializer_class = RouteSerializer
 
     def get_queryset(self):
-        source = self.request.query_params.get("source")
-        destination = self.request.query_params.get("destination")
+        source_closest_sity = self.request.query_params.get("source")
+        destination_closest_sity = self.request.query_params.get("destination")
 
         qs = self.queryset
 
         if self.action in ["list", "retrieve"]:
             qs = qs.select_related("source", "destination")
 
-        if source:
-            qs = qs.filter(source__name__icontains=source)
+        if source_closest_sity:
+            qs = qs.filter(source__closest_big_city__icontains=source_closest_sity)
 
-        if destination:
-            qs = qs.filter(destination__name__icontains=destination)
+        if destination_closest_sity:
+            qs = qs.filter(
+                destination__closest_big_city__icontains=destination_closest_sity
+            )
 
         return qs
 
@@ -67,12 +69,12 @@ class RouteViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "source",
                 type=OpenApiTypes.STR,
-                description="Filter routes by source airport name (case-insensitive, partial match)",
+                description="Filter routes by source airport closest big city (case-insensitive, partial match)",
             ),
             OpenApiParameter(
                 "destination",
                 type=OpenApiTypes.STR,
-                description="Filter routes by destination airport name (case-insensitive, partial match)",
+                description="Filter routes by destination airport closest big city (case-insensitive, partial match)",
             ),
         ]
     )
