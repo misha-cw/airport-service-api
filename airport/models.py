@@ -31,7 +31,7 @@ class Route(models.Model):
 
     @property
     def route_name(self):
-        return f"{self.source} - {self.destination}"
+        return f"{self.source.closest_big_city} - {self.destination.closest_big_city}"
 
     def __str__(self):
         return f"Route #{self.id}"

@@ -52,9 +52,6 @@ class RouteViewSet(
 
         qs = self.queryset
 
-        if self.action in ["list", "retrieve"]:
-            qs = qs.select_related("source", "destination")
-
         if source_closest_sity:
             qs = qs.filter(source__closest_big_city__icontains=source_closest_sity)
 
@@ -62,6 +59,9 @@ class RouteViewSet(
             qs = qs.filter(
                 destination__closest_big_city__icontains=destination_closest_sity
             )
+
+        if self.action in ["list", "retrieve"]:
+            qs = qs.select_related("source", "destination")
 
         return qs
 
@@ -168,20 +168,21 @@ class FlightViewSet(
 
         qs = self.queryset
 
+        if route_id_str:
+            qs = qs.filter(route_id=int(route_id_str))
+
+        if departure_time:
+            qs = qs.filter(departure_time__date=departure_time)
+
         if self.action in ["list", "retrieve"]:
             qs = qs.select_related(
                 "route__source",
                 "route__destination",
                 "airplane",
             )
+
         if self.action == "retrieve":
             qs = qs.select_related("airplane__airplane_type").prefetch_related("crew")
-
-        if route_id_str:
-            qs = qs.filter(route_id=int(route_id_str))
-
-        if departure_time:
-            qs = qs.filter(departure_time__date=departure_time)
 
         return qs
 
