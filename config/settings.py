@@ -129,8 +129,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/files/media"
 
 REST_FRAMEWORK = {
     "DEFAULT_TROTTLE_CLASSES": [
@@ -148,6 +148,19 @@ REST_FRAMEWORK = {
         "config.permissions.IsAdminOrIfAuthenticatedReadOnly",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTECULAR_SETTINGS = {
+    "TITLE": "Airport Service API",
+    "VERSION": "1.0.0",
+    "DESCRIPTION": "API for managing airports, routes, airplanes, crews, flights, and orders.",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "defaultModelRendering": "model",
+        "defaultModelsExpandDepth": 2,
+        "defaultModelExpandDepth": 2,
+    },
 }
 
 SIMPLE_JWT = {
