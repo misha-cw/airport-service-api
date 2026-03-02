@@ -5,6 +5,8 @@ from django.utils.text import slugify
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 
 
 class Airport(models.Model):
@@ -30,6 +32,7 @@ class Route(models.Model):
         ]
 
     @property
+    @extend_schema_field(OpenApiTypes.STR)
     def route_name(self):
         return f"{self.source.closest_big_city} - {self.destination.closest_big_city}"
 
@@ -42,6 +45,7 @@ class Crew(models.Model):
     last_name = models.CharField(max_length=255)
 
     @property
+    @extend_schema_field(OpenApiTypes.STR)
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -73,6 +77,7 @@ class Airplane(models.Model):
     image = models.ImageField(upload_to=airplane_image_file_path, null=True, blank=True)
 
     @property
+    @extend_schema_field(OpenApiTypes.INT)
     def total_seats(self):
         return self.rows * self.seats_in_row
 
