@@ -73,6 +73,7 @@ class AdminCrewApiTests(TestCase):
         res = self.client.post(CREW_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Crew.objects.count(), 1)
         crew = Crew.objects.get(id=res.data["id"])
         for key in payload.keys():
             self.assertEqual(getattr(crew, key), payload[key])

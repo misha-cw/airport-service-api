@@ -66,5 +66,6 @@ class AdminAirplaneTypeApiTests(TestCase):
         res = self.client.post(AIRPLANE_TYPE_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(AirplaneType.objects.count(), 1)
         airplane_type = AirplaneType.objects.get(id=res.data["id"])
         self.assertEqual(airplane_type.name, payload["name"])

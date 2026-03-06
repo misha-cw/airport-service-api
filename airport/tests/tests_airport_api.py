@@ -73,7 +73,7 @@ class AdminAirportApiTests(TestCase):
         }
         res = self.client.post(AIRPORT_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
+        self.assertEqual(Airport.objects.count(), 1)
         airport = Airport.objects.get(id=res.data["id"])
         for key in payload:
             self.assertEqual(getattr(airport, key), payload[key])
