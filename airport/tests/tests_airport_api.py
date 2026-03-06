@@ -48,6 +48,15 @@ class AuthenticatedAirportApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
+    def test_create_airport_forbidden(self):
+        payload = {
+            "name": "New Airport",
+            "closest_big_city": "New City",
+        }
+        res = self.client.post(AIRPORT_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class AdminAirportApiTests(TestCase):
     def setUp(self):

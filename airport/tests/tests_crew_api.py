@@ -47,6 +47,15 @@ class AuthenticatedCrewApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
+    def test_create_crew_forbidden(self):
+        payload = {
+            "first_name": "New First Name",
+            "last_name": "New Last Name",
+        }
+        res = self.client.post(CREW_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class AdminCrewApiTests(TestCase):
     def setUp(self):
