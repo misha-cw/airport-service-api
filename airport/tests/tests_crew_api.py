@@ -10,10 +10,6 @@ from airport.serializers import CrewSerializer
 CREW_URL = reverse("airport:crew-list")
 
 
-def detail_url(crew_id):
-    return reverse("airport:crew-detail", args=[crew_id])
-
-
 def sample_crew(**params) -> Crew:
     defaults = {
         "first_name": "John",

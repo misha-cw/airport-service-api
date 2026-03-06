@@ -10,10 +10,6 @@ from airport.serializers import AirplaneTypeSerializer
 AIRPLANE_TYPE_URL = reverse("airport:airplanetype-list")
 
 
-def detail_url(airplane_type_id):
-    return reverse("airport:airplanetype-detail", args=[airplane_type_id])
-
-
 def sample_airplane_type(**params) -> AirplaneType:
     defaults = {
         "name": "Test Airplane Type",

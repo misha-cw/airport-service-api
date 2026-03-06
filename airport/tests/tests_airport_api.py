@@ -11,10 +11,6 @@ from airport.serializers import AirportSerializer
 AIRPORT_URL = reverse("airport:airport-list")
 
 
-def detail_url(airport_id):
-    return reverse("airport:airport-detail", args=[airport_id])
-
-
 def sample_airport(**params) -> Airport:
     defaults = {
         "name": "Sample Airport",
