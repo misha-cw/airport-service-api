@@ -1,4 +1,13 @@
-from airport.models import Airplane, AirplaneType, Airport, Crew, Flight, Route
+from airport.models import (
+    Airplane,
+    AirplaneType,
+    Airport,
+    Crew,
+    Flight,
+    Order,
+    Route,
+    Ticket,
+)
 
 
 def sample_airport(**params) -> Airport:
@@ -10,7 +19,7 @@ def sample_airport(**params) -> Airport:
     return Airport.objects.create(**defaults)
 
 
-def sample_route(**params):
+def sample_route(**params) -> Route:
     source = params.pop("source", sample_airport(name="Source Airport"))
     destination = params.pop("destination", sample_airport(name="Destination Airport"))
 
@@ -31,7 +40,7 @@ def sample_airplane_type(**params) -> AirplaneType:
     return AirplaneType.objects.create(**defaults)
 
 
-def sample_airplane(**params):
+def sample_airplane(**params) -> Airplane:
     airplane_type = params.pop("airplane_type", sample_airplane_type())
 
     defaults = {
@@ -44,7 +53,7 @@ def sample_airplane(**params):
     return Airplane.objects.create(**defaults)
 
 
-def sample_crew(**params):
+def sample_crew(**params) -> Crew:
     defaults = {
         "first_name": "John",
         "last_name": "Doe",
@@ -53,7 +62,7 @@ def sample_crew(**params):
     return Crew.objects.create(**defaults)
 
 
-def sample_flight(**params):
+def sample_flight(**params) -> Flight:
     route = params.pop("route", sample_route())
     airplane = params.pop("airplane", sample_airplane())
 
@@ -65,3 +74,18 @@ def sample_flight(**params):
     }
     defaults.update(params)
     return Flight.objects.create(**defaults)
+
+
+def sample_order(**params) -> Order:
+    defaults = {"user": None}
+    defaults.update(params)
+    return Order.objects.create(**defaults)
+
+
+def sample_ticket(**params) -> Ticket:
+    flight = params.pop("flight", sample_flight())
+    order = params.pop("order", sample_order())
+
+    defaults = {"row": 1, "seat": 1, "flight": flight, "order": order}
+    defaults.update(params)
+    return Ticket.objects.create(**defaults)
