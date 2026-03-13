@@ -6,18 +6,10 @@ from rest_framework.test import APIClient
 
 from airport.models import Airport
 from airport.serializers import AirportSerializer
+from airport.tests.utils import sample_airport
 
 
 AIRPORT_URL = reverse("airport:airport-list")
-
-
-def sample_airport(**params) -> Airport:
-    defaults = {
-        "name": "Sample Airport",
-        "closest_big_city": "Sample City",
-    }
-    defaults.update(params)
-    return Airport.objects.create(**defaults)
 
 
 class UnauthenticatedAirportApiTests(TestCase):

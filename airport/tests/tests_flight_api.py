@@ -5,10 +5,16 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db.models import F, Count
 
-from airport.models import Airplane, AirplaneType, Airport, Crew, Flight, Order, Route
+from airport.models import Flight
 from airport.serializers import (
     FlightListSerializer,
     FlightDetailSerializer,
+)
+from airport.tests.utils import (
+    sample_airplane,
+    sample_crew,
+    sample_flight,
+    sample_route,
 )
 
 FLIGHT_URL = reverse("airport:flight-list")
@@ -16,59 +22,6 @@ FLIGHT_URL = reverse("airport:flight-list")
 
 def detail_url(flight_id):
     return reverse("airport:flight-detail", args=[flight_id])
-
-
-def sample_route(**params):
-    source = Airport.objects.create(
-        name="Source Airport", closest_big_city="Source City"
-    )
-    destination = Airport.objects.create(
-        name="Destination Airport", closest_big_city="Destination City"
-    )
-
-    defaults = {
-        "source": source,
-        "destination": destination,
-        "distance": 1000,
-    }
-    defaults.update(params)
-    return Route.objects.create(**defaults)
-
-
-def sample_airplane(**params):
-    airplane_type = AirplaneType.objects.create(name="Sample Airplane Type")
-
-    defaults = {
-        "name": "Sample Airplane",
-        "rows": 10,
-        "seats_in_row": 5,
-        "airplane_type": airplane_type,
-    }
-    defaults.update(params)
-    return Airplane.objects.create(**defaults)
-
-
-def sample_crew(**params):
-    defaults = {
-        "first_name": "John",
-        "last_name": "Doe",
-    }
-    defaults.update(params)
-    return Crew.objects.create(**defaults)
-
-
-def sample_flight(**params):
-    route = sample_route()
-    airplane = sample_airplane()
-
-    defaults = {
-        "route": route,
-        "airplane": airplane,
-        "departure_time": "2024-01-01T10:00:00Z",
-        "arrival_time": "2024-01-01T12:00:00Z",
-    }
-    defaults.update(params)
-    return Flight.objects.create(**defaults)
 
 
 class UnauthenticatedFlightApiTests(TestCase):

@@ -4,36 +4,15 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from airport.models import Airport, Route
+from airport.models import Route
 from airport.serializers import RouteListSerializer, RouteDetailSerializer
+from airport.tests.utils import sample_airport, sample_route
 
 ROUTE_URL = reverse("airport:route-list")
 
 
 def detail_url(route_id):
     return reverse("airport:route-detail", args=[route_id])
-
-
-def sample_airport(**params):
-    defaults = {
-        "name": "Sample Airport",
-        "closest_big_city": "Sample City",
-    }
-    defaults.update(params)
-    return Airport.objects.create(**defaults)
-
-
-def sample_route(**params):
-    source = params.pop("source", sample_airport(name="Source Airport"))
-    destination = params.pop("destination", sample_airport(name="Destination Airport"))
-
-    defaults = {
-        "source": source,
-        "destination": destination,
-        "distance": 1000,
-    }
-    defaults.update(params)
-    return Route.objects.create(**defaults)
 
 
 class UnauthenticatedRouteApiTests(TestCase):

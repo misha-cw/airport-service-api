@@ -6,17 +6,9 @@ from rest_framework.test import APIClient
 
 from airport.models import Crew
 from airport.serializers import CrewSerializer
+from airport.tests.utils import sample_crew
 
 CREW_URL = reverse("airport:crew-list")
-
-
-def sample_crew(**params) -> Crew:
-    defaults = {
-        "first_name": "John",
-        "last_name": "Doe",
-    }
-    defaults.update(params)
-    return Crew.objects.create(**defaults)
 
 
 class UnauthenticatedCrewApiTests(TestCase):

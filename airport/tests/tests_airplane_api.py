@@ -4,37 +4,18 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from airport.models import Airplane, AirplaneType
+from airport.models import Airplane
 from airport.serializers import (
     AirplaneDetailSerializer,
     AirplaneListSerializer,
 )
+from airport.tests.utils import sample_airplane, sample_airplane_type
 
 AIRPLANE_URL = reverse("airport:airplane-list")
 
 
 def detail_url(airplane_id):
     return reverse("airport:airplane-detail", args=[airplane_id])
-
-
-def sample_airplane_type(**params):
-    defaults = {
-        "name": "Sample Airplane Type",
-    }
-    defaults.update(params)
-    return AirplaneType.objects.create(**defaults)
-
-
-def sample_airplane(**params) -> Airplane:
-    defaults = {
-        "name": "Sample Airplane",
-        "rows": 10,
-        "seats_in_row": 6,
-        "airplane_type": None,
-        "image": None,
-    }
-    defaults.update(params)
-    return Airplane.objects.create(**defaults)
 
 
 class UnauthenticatedAirplaneApiTests(TestCase):

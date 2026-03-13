@@ -6,16 +6,9 @@ from rest_framework.test import APIClient
 
 from airport.models import AirplaneType
 from airport.serializers import AirplaneTypeSerializer
+from airport.tests.utils import sample_airplane_type
 
 AIRPLANE_TYPE_URL = reverse("airport:airplanetype-list")
-
-
-def sample_airplane_type(**params) -> AirplaneType:
-    defaults = {
-        "name": "Test Airplane Type",
-    }
-    defaults.update(params)
-    return AirplaneType.objects.create(**defaults)
 
 
 class UnauthenticatedAirplaneTypeApiTests(TestCase):
