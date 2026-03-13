@@ -123,6 +123,10 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class TicketListSerializer(TicketSerializer):
+    flight = serializers.CharField(read_only=True)
+
+
+class TicketDetailSerializer(TicketSerializer):
     flight = FlightListSerializer(many=False, read_only=True)
 
 
@@ -171,3 +175,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderListSerializer(OrderSerializer):
     tickets = TicketListSerializer(many=True, read_only=True)
+
+
+class OrderDetailSerializer(OrderSerializer):
+    tickets = TicketDetailSerializer(many=True, read_only=True)

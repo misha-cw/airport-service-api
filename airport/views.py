@@ -20,6 +20,7 @@ from airport.serializers import (
     FlightDetailSerializer,
     FlightListSerializer,
     FlightSerializer,
+    OrderDetailSerializer,
     OrderListSerializer,
     OrderSerializer,
     RouteDetailSerializer,
@@ -229,9 +230,10 @@ class OrderViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:
+        if self.action == "list":
             return OrderListSerializer
-
+        elif self.action == "retrieve":
+            return OrderDetailSerializer
         return OrderSerializer
 
     def get_queryset(self):
