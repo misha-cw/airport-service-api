@@ -84,8 +84,7 @@ def sample_order(**params) -> Order:
 
 def sample_ticket(**params) -> Ticket:
     flight = params.pop("flight", sample_flight())
-    order = params.pop("order", sample_order())
 
-    defaults = {"row": 1, "seat": 1, "flight": flight, "order": order}
+    defaults = {"row": 1, "seat": 1, "flight": flight, "order": None}
     defaults.update(params)
     return Ticket.objects.create(**defaults)
