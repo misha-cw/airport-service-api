@@ -111,7 +111,7 @@ class AuthenticatedOrderApiTests(TestCase):
             ]
         }
         url = detail_url(order.id)
-        res = self.client.post(url, payload)
+        res = self.client.put(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -139,7 +139,7 @@ class AdminOrderApiTests(TestCase):
             ]
         }
         url = detail_url(order.id)
-        res = self.client.post(url, payload)
+        res = self.client.put(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 

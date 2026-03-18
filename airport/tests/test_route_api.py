@@ -149,7 +149,7 @@ class AdminRouteApiTests(TestCase):
             "distance": 1500,
         }
         url = detail_url(route.id)
-        res = self.client.post(url, payload)
+        res = self.client.put(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 

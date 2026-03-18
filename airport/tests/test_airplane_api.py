@@ -113,7 +113,7 @@ class AdminAirplaneApiTests(TestCase):
             "airplane_type": airplane.airplane_type.id,
         }
         url = detail_url(airplane.id)
-        res = self.client.post(url, payload)
+        res = self.client.put(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 

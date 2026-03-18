@@ -177,7 +177,7 @@ class AdminFlightApiTests(TestCase):
             "arrival_time": "2024-01-01T14:00:00Z",
         }
         url = detail_url(flight.id)
-        res = self.client.post(url, payload)
+        res = self.client.put(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
