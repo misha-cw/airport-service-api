@@ -138,3 +138,23 @@ class AdminRouteApiTests(TestCase):
                 attr = attr.id
 
             self.assertEqual(attr, payload[key])
+
+    def test_put_route_not_allowed(self):
+        route = sample_route()
+        source = sample_airport(name="Source Airport")
+        destination = sample_airport(name="Destination Airport")
+        payload = {
+            "source": source.id,
+            "destination": destination.id,
+            "distance": 1500,
+        }
+        url = detail_url(route.id)
+        res = self.client.post(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_route_not_allowed(self):
+        route = sample_route()
+        res = self.client.delete(detail_url(route.id))
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

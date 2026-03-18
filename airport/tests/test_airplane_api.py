@@ -86,12 +86,11 @@ class AdminAirplaneApiTests(TestCase):
         self.client.force_authenticate(user=self.admin_user)
 
     def test_create_airplane(self):
-        airplane_type = sample_airplane_type()
         payload = {
             "name": "New Airplane",
             "rows": 20,
             "seats_in_row": 8,
-            "airplane_type": airplane_type.id,
+            "airplane_type": sample_airplane_type().id,
         }
         res = self.client.post(AIRPLANE_URL, payload)
 
@@ -104,6 +103,25 @@ class AdminAirplaneApiTests(TestCase):
                 attr = attr.id
 
             self.assertEqual(attr, payload[key])
+
+    def test_put_airplane_not_allowed(self):
+        airplane = sample_airplane()
+        payload = {
+            "name": "New Airplane",
+            "rows": 20,
+            "seats_in_row": 8,
+            "airplane_type": airplane.airplane_type.id,
+        }
+        url = detail_url(airplane.id)
+        res = self.client.post(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_airplane_not_allowed(self):
+        airplane = sample_airplane()
+        res = self.client.delete(detail_url(airplane.id))
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class AirplaneImageUploadTests(TestCase):

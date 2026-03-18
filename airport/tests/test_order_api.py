@@ -101,3 +101,50 @@ class AuthenticatedOrderApiTests(TestCase):
         db_data = {(t.row, t.seat, t.flight.id) for t in tickets}
 
         self.assertEqual(payload_data, db_data)
+
+    def test_put_order_not_allowed(self):
+        order = sample_order(user=self.user)
+        flight = sample_flight()
+        payload = {
+            "tickets": [
+                {"flight": flight.id, "row": 1, "seat": 1},
+            ]
+        }
+        url = detail_url(order.id)
+        res = self.client.post(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_order_not_allowed(self):
+        order = sample_order(user=self.user)
+        res = self.client.delete(detail_url(order.id))
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class AdminOrderApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = get_user_model().objects.create_superuser(
+            email="admin@example.com", password="adminpassword123", is_staff=True
+        )
+        self.client.force_authenticate(user=self.admin_user)
+
+    def test_put_order_not_allowed(self):
+        order = sample_order(user=self.admin_user)
+        flight = sample_flight()
+        payload = {
+            "tickets": [
+                {"flight": flight.id, "row": 1, "seat": 1},
+            ]
+        }
+        url = detail_url(order.id)
+        res = self.client.post(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_order_not_allowed(self):
+        order = sample_order(user=self.admin_user)
+        res = self.client.delete(detail_url(order.id))
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

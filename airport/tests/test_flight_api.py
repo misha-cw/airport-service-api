@@ -163,3 +163,26 @@ class AdminFlightApiTests(TestCase):
 
         crew_ids = set(flight.crew.values_list("id", flat=True))
         self.assertEqual(crew_ids, set(payload["crew"]))
+
+    def test_put_flight_not_allowed(self):
+        flight = sample_flight()
+        payload = {
+            "route": sample_route().id,
+            "airplane": sample_airplane().id,
+            "crew": [
+                sample_crew(first_name="Rick").id,
+                sample_crew(first_name="John").id,
+            ],
+            "departure_time": "2024-01-01T12:00:00Z",
+            "arrival_time": "2024-01-01T14:00:00Z",
+        }
+        url = detail_url(flight.id)
+        res = self.client.post(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_flight_not_allowed(self):
+        flight = sample_flight()
+        res = self.client.delete(detail_url(flight.id))
+
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
