@@ -20,8 +20,13 @@ def sample_airport(**params) -> Airport:
 
 
 def sample_route(**params) -> Route:
-    source = params.pop("source", sample_airport(name="Source Airport"))
-    destination = params.pop("destination", sample_airport(name="Destination Airport"))
+    source = params.pop("source", None)
+    if source is None:
+        source = sample_airport(name="Source Airport")
+
+    destination = params.pop("destination", None)
+    if destination is None:
+        destination = sample_airport(name="Destination Airport")
 
     defaults = {
         "source": source,
@@ -41,7 +46,9 @@ def sample_airplane_type(**params) -> AirplaneType:
 
 
 def sample_airplane(**params) -> Airplane:
-    airplane_type = params.pop("airplane_type", sample_airplane_type())
+    airplane_type = params.pop("airplane_type", None)
+    if airplane_type is None:
+        airplane_type = sample_airplane_type()
 
     defaults = {
         "name": "Sample Airplane",
@@ -63,8 +70,13 @@ def sample_crew(**params) -> Crew:
 
 
 def sample_flight(**params) -> Flight:
-    route = params.pop("route", sample_route())
-    airplane = params.pop("airplane", sample_airplane())
+    route = params.pop("route", None)
+    if route is None:
+        route = sample_route()
+
+    airplane = params.pop("airplane", None)
+    if airplane is None:
+        airplane = sample_airplane()
 
     defaults = {
         "route": route,
@@ -83,7 +95,9 @@ def sample_order(**params) -> Order:
 
 
 def sample_ticket(**params) -> Ticket:
-    flight = params.pop("flight", sample_flight())
+    flight = params.pop("flight", None)
+    if flight is None:
+        flight = sample_flight()
 
     defaults = {"row": 1, "seat": 1, "flight": flight, "order": None}
     defaults.update(params)
