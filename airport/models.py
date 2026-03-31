@@ -3,10 +3,11 @@ import uuid
 from django.utils.text import slugify
 
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
+
+from config import settings
 
 
 class Airport(models.Model):
@@ -107,7 +108,7 @@ class Flight(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        get_user_model(), related_name="orders", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, related_name="orders", on_delete=models.CASCADE
     )
 
     class Meta:
