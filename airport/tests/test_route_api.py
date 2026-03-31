@@ -1,12 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from airport.models import Route
 from airport.serializers import RouteListSerializer, RouteDetailSerializer
-from airport.tests.utils import sample_airport, sample_route
+from airport.tests.utils import sample_airport, sample_route, USER
 
 ROUTE_URL = reverse("airport:route-list")
 
@@ -27,7 +26,7 @@ class UnauthenticatedRouteApiTests(TestCase):
 class AuthenticatedRouteApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = USER.objects.create_user(
             email="test@example.com", password="testpassword123"
         )
         self.client.force_authenticate(user=self.user)
@@ -113,7 +112,7 @@ class AuthenticatedRouteApiTests(TestCase):
 class AdminRouteApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.admin_user = get_user_model().objects.create_superuser(
+        self.admin_user = USER.objects.create_superuser(
             email="admin@example.com", password="adminpassword123", is_staff=True
         )
         self.client.force_authenticate(user=self.admin_user)

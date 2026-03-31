@@ -2,11 +2,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
 from airport.models import Order, Ticket
 from airport.serializers import OrderDetailSerializer, OrderListSerializer
-from airport.tests.utils import sample_flight, sample_order, sample_ticket
+from airport.tests.utils import sample_flight, sample_order, sample_ticket, USER
 
 
 ORDER_URL = reverse("airport:order-list")
@@ -28,7 +27,7 @@ class UnauthenticatedOrderApiTests(TestCase):
 class AuthenticatedOrderApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = USER.objects.create_user(
             email="test@example.com", password="testpassword123"
         )
         self.client.force_authenticate(user=self.user)
@@ -36,7 +35,7 @@ class AuthenticatedOrderApiTests(TestCase):
     def test_list_orders(self):
         sample_order(user=self.user)
         sample_order(user=self.user)
-        other_user = get_user_model().objects.create_user(
+        other_user = USER.objects.create_user(
             email="other@test.com", password="otherpassword123"
         )
         sample_order(user=other_user)
@@ -125,7 +124,7 @@ class AuthenticatedOrderApiTests(TestCase):
 class AdminOrderApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.admin_user = get_user_model().objects.create_superuser(
+        self.admin_user = USER.objects.create_superuser(
             email="admin@example.com", password="adminpassword123", is_staff=True
         )
         self.client.force_authenticate(user=self.admin_user)

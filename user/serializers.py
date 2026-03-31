@@ -2,10 +2,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.utils.translation import gettext as _
 
+USER = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = get_user_model()
+        model = USER
         fields = ("id", "email", "password", "is_staff")
         read_only_fields = (
             "id",
@@ -22,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
-        return get_user_model().objects.create_user(**validated_data)
+        return USER.objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):
         """Update a user, set the password correctly and return it"""

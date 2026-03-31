@@ -8,6 +8,7 @@ from user.serializers import UserSerializer
 
 CREATE_USER_URL = reverse("user:create")
 MANAGE_USER_URL = reverse("user:manage")
+USER = get_user_model()
 
 
 class CreateUserApiTest(TestCase):
@@ -35,7 +36,7 @@ class UnauthenticatedManageUserApiTest(TestCase):
 class AuthenticatedManageUserApiTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = USER.objects.create_user(
             email="user@test.com", password="userpassword123"
         )
         self.client.force_authenticate(user=self.user)

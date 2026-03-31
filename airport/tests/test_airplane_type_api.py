@@ -1,12 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from airport.models import AirplaneType
 from airport.serializers import AirplaneTypeSerializer
-from airport.tests.utils import sample_airplane_type
+from airport.tests.utils import sample_airplane_type, USER
 
 AIRPLANE_TYPE_URL = reverse("airport:airplanetype-list")
 
@@ -23,7 +22,7 @@ class UnauthenticatedAirplaneTypeApiTests(TestCase):
 class AuthenticatedAirplaneTypeApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = USER.objects.create_user(
             email="test@example.com", password="testpassword123"
         )
         self.client.force_authenticate(user=self.user)
@@ -49,7 +48,7 @@ class AuthenticatedAirplaneTypeApiTests(TestCase):
 class AdminAirplaneTypeApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.admin_user = get_user_model().objects.create_superuser(
+        self.admin_user = USER.objects.create_superuser(
             email="admin@example.com", password="adminpassword123", is_staff=True
         )
         self.client.force_authenticate(user=self.admin_user)

@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 from airport.models import (
     Airplane,
     AirplaneType,
@@ -8,6 +10,8 @@ from airport.models import (
     Route,
     Ticket,
 )
+
+USER = get_user_model()
 
 
 def sample_airport(**params) -> Airport:

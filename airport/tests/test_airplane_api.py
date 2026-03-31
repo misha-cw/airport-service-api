@@ -4,7 +4,6 @@ import tempfile
 from PIL import Image
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -13,7 +12,12 @@ from airport.serializers import (
     AirplaneDetailSerializer,
     AirplaneListSerializer,
 )
-from airport.tests.utils import sample_airplane, sample_airplane_type, sample_flight
+from airport.tests.utils import (
+    sample_airplane,
+    sample_airplane_type,
+    sample_flight,
+    USER,
+)
 
 AIRPLANE_URL = reverse("airport:airplane-list")
 
@@ -38,7 +42,7 @@ class UnauthenticatedAirplaneApiTests(TestCase):
 class AuthenticatedAirplaneApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = USER.objects.create_user(
             email="test@example.com", password="testpassword123"
         )
         self.client.force_authenticate(user=self.user)
@@ -80,7 +84,7 @@ class AuthenticatedAirplaneApiTests(TestCase):
 class AdminAirplaneApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.admin_user = get_user_model().objects.create_superuser(
+        self.admin_user = USER.objects.create_superuser(
             email="admin@example.com", password="adminpassword123", is_staff=True
         )
         self.client.force_authenticate(user=self.admin_user)
@@ -127,7 +131,7 @@ class AdminAirplaneApiTests(TestCase):
 class AirplaneImageUploadTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_superuser(
+        self.user = USER.objects.create_superuser(
             email="admin@test.com", password="adminpassword123", is_staff=True
         )
         self.client.force_authenticate(user=self.user)

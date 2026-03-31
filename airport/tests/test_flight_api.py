@@ -2,7 +2,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from django.db.models import F, Count
 
 from airport.models import Flight
@@ -15,6 +14,7 @@ from airport.tests.utils import (
     sample_crew,
     sample_flight,
     sample_route,
+    USER,
 )
 
 FLIGHT_URL = reverse("airport:flight-list")
@@ -36,7 +36,7 @@ class UnauthenticatedFlightApiTests(TestCase):
 class AuthenticatedFlightApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
+        self.user = USER.objects.create_user(
             email="test@example.com", password="testpassword123"
         )
         self.client.force_authenticate(user=self.user)
@@ -131,7 +131,7 @@ class AuthenticatedFlightApiTests(TestCase):
 class AdminFlightApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_superuser(
+        self.user = USER.objects.create_superuser(
             email="admin@example.com", password="adminpassword123", is_staff=True
         )
         self.client.force_authenticate(user=self.user)
