@@ -1,0 +1,70 @@
+from django.test import TestCase
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from airport.models import Airport
+from airport.serializers import AirportSerializer
+from airport.tests.utils import sample_airport, USER
+
+
+AIRPORT_URL = reverse("airport:airport-list")
+
+
+class UnauthenticatedAirportApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_auth_required(self):
+        res = self.client.get(AIRPORT_URL)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class AuthenticatedAirportApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = USER.objects.create_user(
+            email="test@example.com", password="testpassword123"
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_list_airports(self):
+        sample_airport(name="Airport 1", closest_big_city="City 1")
+        sample_airport(name="Airport 2", closest_big_city="City 2")
+
+        res = self.client.get(AIRPORT_URL)
+        airports = Airport.objects.all().order_by("id")
+        serializer = AirportSerializer(airports, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_create_airport_forbidden(self):
+        payload = {
+            "name": "New Airport",
+            "closest_big_city": "New City",
+        }
+        res = self.client.post(AIRPORT_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminAirportApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = USER.objects.create_superuser(
+            email="admin@example.com", password="adminpassword123", is_staff=True
+        )
+        self.client.force_authenticate(user=self.admin_user)
+
+    def test_create_airport(self):
+        payload = {
+            "name": "New Airport",
+            "closest_big_city": "New City",
+        }
+        res = self.client.post(AIRPORT_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Airport.objects.count(), 1)
+        airport = Airport.objects.get(id=res.data["id"])
+        for key in payload:
+            self.assertEqual(getattr(airport, key), payload[key])
